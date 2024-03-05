@@ -6,32 +6,54 @@ class Node(object):
 
 class CircularDLL():
     def __init__(self):
-        self.last = None
+        self.head = None
 
     def insertAtEmpty(self,val):
-        if self.last !=None:
+        if self.head !=None:
             return
-        newNode = Node(val)
-        self.last = newNode
+        newNode = Node(self.head,val)
+        self.head = newNode
+        self.head.pre = self.head
         newNode.next = newNode
         newNode.pre = newNode
 
+    def insert_at_first(self,val):
+        if self.head == None:
+            return self.insertAtEmpty(val)
+        
+        newNode = Node(self.head,val)
+        self.head.next = newNode
+        self.head.pre = newNode
+        newNode.next = self.head
+        newNode.pre = self.head
+
+    def insert_at_head(self,val):
+        if self.head == None:
+            return self.insertAtEmpty(val)
+        
+        newNode = Node(val)
+        newNode.next = self.head.next
+
+
+
     def printList_asc(self):
-        temp = self.last
-        # while(temp.next != self.last):
-        #     print(temp.val,end=" --> ")
-        #     temp = temp.next
+        temp = self.head.next
+        while(temp.next != self.head):
+            print(temp.val,end=" --> ")
+            temp = temp.next
         print(temp.val,end=" --> ")
 
     def printFor(self):
-        temp = self.last
-        for i in range(3):
+        temp = self.head.next
+        for i in range(4):
             print(temp.val,end=" --> ")
             temp = temp.next
 
 cdll = CircularDLL()
 cdll.insertAtEmpty(56)
+cdll.insert_at_first(21)
 cdll.printList_asc()
+print()
 cdll.printFor()
 
 
