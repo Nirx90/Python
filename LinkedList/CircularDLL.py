@@ -27,42 +27,70 @@ class CircularDLL(object):
             return self.insertAtEmpty(val)
         
         newNode = Node(val)
-        temp = self.head   
-        newNode.next = self.head
-        newNode.pre = temp.pre
-        temp.pre.next = newNode
-        temp.pre = newNode
+        temp = self.head  
+
+        if temp.next == self.head:
+            newNode.next = temp
+            newNode.pre = temp
+            temp.next = newNode
+            temp.pre = newNode
+
+        else:
+            newNode.next = temp
+            newNode.pre = temp.pre
+            temp.pre.next = newNode
+            temp.pre = newNode
+
 
     def insert_at_first(self,val):
         if self.head == None:
             return self.insertAtEmpty(val)
         
+        newNode = Node(val) 
         temp = self.head
-
-        newNode = Node(val)        
-        newNode.pre = temp.pre
-        temp.pre.next = newNode
-        newNode.next = temp
-        self.head = newNode
         
-    def insert_after(self,elem,val):
+        if temp.next == self.head:
+            newNode.next = temp
+            newNode.pre = temp
+            temp.next = newNode
+            temp.pre = newNode
+            self.head = newNode
+
+        else:       
+            newNode.pre = temp.pre
+            temp.pre.next = newNode
+            newNode.next = temp
+            temp.pre = newNode
+            self.head = newNode
+
+
+        
+    def insert_after(self,elem,data):
         if self.isEmpty():
             return
         
-        if self.head == None:
-            return 
         temp = self.head
-        newNode = Node(val)
-
+        newNode = Node(data)
+        if temp.val == elem:
+            newNode.pre = temp
+            newNode.next = temp.next
+            temp.next.pre = newNode
+            temp.next = newNode
+            return
+        
         while(temp.next != self.head):
             if temp.val == elem:
                 break
             temp = temp.next
 
+
         if temp.next == self.head:
             if temp.val == elem:
-                return self.insert_at_last(val)
+                return self.insert_at_last(data)
+            else:
+                return 
             
+
         newNode.next = temp.next
         temp.next.pre = newNode
         temp.next = newNode
@@ -144,35 +172,40 @@ class CircularDLL(object):
             print(temp.val,end=" --> ")
             temp = temp.pre
         print(temp.val,end=" --> ")
+        print(temp.pre.val,end=" --> ")
 
     def printFor(self):
         if self.isEmpty():
             return
         
         temp = self.head
-        for i in range(10):
+        for i in range(15):
             print(temp.val,end=" --> ")
             temp = temp.next
+
+
 
 cdll = CircularDLL()
 cdll.insertAtEmpty(56)
 cdll.insert_at_last(12)
 cdll.insert_at_last(13)
-# cdll.insert_at_last(14)
+cdll.insert_at_last(14)
 cdll.insert_at_last(26)
 cdll.insert_at_last(21)
 cdll.insert_at_first(488)
 cdll.insert_at_first(128)
 cdll.printList_asc()
-cdll.insert_after(10,111)
+
 print()
 cdll.printList_asc()
 print()
 cdll.delete_first()
 cdll.delete_last()
 cdll.insert_at_last(34)
-cdll.delete_last()
+# cdll.delete_last()
+cdll.insert_after(26,111)
 cdll.printList_asc()
+
 
 print()
 cdll.printFor()
@@ -181,4 +214,5 @@ print()
 
 cdll.printList_desc()
 print()
-cdll.search(13)
+
+# cdll.search(13)
