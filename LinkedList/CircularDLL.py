@@ -97,34 +97,50 @@ class CircularDLL(object):
         newNode.pre = temp
 
     def delete_first(self):
+        temp = self.head
         if self.isEmpty():
             return
         
-        temp = self.head
+        if temp.next == self.head:
+            self.head = None
+            return
+        
+
         temp.pre.next = temp.next
         temp.next.pre = temp.pre
         self.head = temp.next
 
     def delete_last(self):
+        temp = self.head
         if self.isEmpty():
             return
         
-        temp = self.head
+        if temp.next == self.head:
+            self.head = None
+            return
+        
+        
         temp.pre = temp.pre.pre
         temp.pre.next = temp
 
     def deleteItem(self,item):
+        temp = self.head
+
         if self.isEmpty():
             return
         
-        temp = self.head
+        if temp.val == item:
+            return self.delete_first()
+
+        if temp.pre.val == item:
+            return self.delete_last()
+        
         while(temp.next != self.head):
-            if temp.val == item:
+            if temp.next.val == item:
+                temp.next = temp.next.next
+                temp.next.pre = temp
                 break
             temp = temp.next
-
-        
-        
 
     def search(self,data):
         if self.isEmpty():
@@ -153,7 +169,7 @@ class CircularDLL(object):
             
             return None
             
-    def printList_asc(self):
+    def printList_forward(self):
         if self.isEmpty():
             return
         
@@ -163,16 +179,22 @@ class CircularDLL(object):
             temp = temp.next
         print(temp.val,end=" --> ")
 
-    def printList_desc(self):
+    def printList_reverse(self):
         if self.isEmpty():
             return
         
         temp = self.head.pre
         while(temp.pre != self.head):
-            print(temp.val,end=" --> ")
+            print(temp.val,end=" <-- ")
             temp = temp.pre
-        print(temp.val,end=" --> ")
-        print(temp.pre.val,end=" --> ")
+        print(temp.val,end=" <-- ")
+        print(temp.pre.val,end=" <-- ")
+
+    def ascending_sort(self):
+        pass
+
+    def descending_sort(self):
+        pass
 
     def printFor(self):
         if self.isEmpty():
@@ -194,25 +216,26 @@ cdll.insert_at_last(26)
 cdll.insert_at_last(21)
 cdll.insert_at_first(488)
 cdll.insert_at_first(128)
-cdll.printList_asc()
+cdll.printList_forward()
 
 print()
-cdll.printList_asc()
+cdll.printList_forward()
 print()
 cdll.delete_first()
 cdll.delete_last()
 cdll.insert_at_last(34)
-# cdll.delete_last()
-cdll.insert_after(26,111)
-cdll.printList_asc()
+cdll.delete_last()
+cdll.insert_after(488,111)
+cdll.printList_forward()
 
 
 print()
+# cdll.deleteItem(14)
 cdll.printFor()
 
 print()
 
-cdll.printList_desc()
+cdll.printList_reverse()
 print()
 
 # cdll.search(13)
