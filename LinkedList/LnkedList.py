@@ -24,16 +24,8 @@ class LinkdList(object):
         temp.next = newNode
         
     def insert_at_first(self,val):
-        newNode = Node(val)
-
-        if self.isEmpty():
-            self.head = newNode
-            return
-        
-        temp = self.head
-
+        newNode = Node(val,self.head)
         self.head = newNode
-        newNode.next = temp
 
     def insert_after(self,element,data):
         newNode = Node(data)
@@ -59,23 +51,18 @@ class LinkdList(object):
             temp.next = newNode
             return
 
-    
-    def delete_last(self):
-        temp = self.head
-        while(temp.next.next!=None):
-            temp = temp.next
-        temp.next = None
-            
-        
-    def printList(self):
-        temp = self.head
-        while(temp.next !=None):
-            print(temp.val,end="-->")
-            temp = temp.next
-        print(temp.val,end="-->")
-                   
-    
+    def delete_first(self):
+        if not self.isEmpty():
+            self.head = self.head.next
 
+    def delete_last(self):
+        if not self.isEmpty():
+
+            temp = self.head
+            while(temp.next.next!=None):
+                temp = temp.next
+            temp.next = None
+            
     def delete_data(self,data):
         if(self.isEmpty()):
             return 
@@ -87,8 +74,14 @@ class LinkdList(object):
                 break
             temp = temp.next
         temp.next = temp.next.next
-
-    
+            
+    def printList(self):
+        temp = self.head
+        while(temp.next !=None):
+            print(temp.val,end="-->")
+            temp = temp.next
+        print(temp.val,end="-->")
+                   
     
     def search(self,data):
         temp = self.head
@@ -98,13 +91,7 @@ class LinkdList(object):
             temp = temp.next
 
         if(temp.val == data):
-            return data
-
-    def delete_first(self):
-        if self.isEmpty():
-            return None
-        
-        self.head = self.head.next 
+            return data 
 
     def ascending_sort(self):
         c = self.count()
@@ -142,7 +129,7 @@ class LinkdList(object):
 # ll = [650,10,44,90,32,88,63]
                
 lst = LinkdList()
-lst.head = Node(1)
+
 
 # for i in ll:
 #     lst.insert_at_last(i)
@@ -156,16 +143,18 @@ lst.delete_data(32)
 
 lst.insert_at_first(650)
 lst.insert_after(650,88)
+lst.printList()
 lst.delete_first()
 
+# lst.printList()
+print()
+# lst.ascending_sort()
+
+print()
+# lst.descending_sort()
 lst.printList()
 print()
-lst.ascending_sort()
-lst.printList()
-print()
-lst.descending_sort()
-lst.printList()
-print(lst.search(4))
+print(lst.search(88))
 
 
 
