@@ -116,7 +116,7 @@ db.printList_asc()
 print()
 
 # db.delete_first()
-# db.delete_first()
+db.delete_first()
 db.delete_last()
 db.printList_asc()
 print()
