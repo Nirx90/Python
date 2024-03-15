@@ -9,32 +9,35 @@
 
 # myList = [9, 8, 23, 4, 11, 12, 78, 45, 58, 89]
 myList = [11,15,8,13,20,4,3,5,6,9,18,12]
-low=1
+low=0
 high=len(myList)-1
 
-def quicksort(myList,low,high):
-    pi = myList[0]
-    i = 1
-    j = high
-    while(i <= j):
-        # print(low,high)
-        while(myList[i]<pi):
-            i += 1
+def partition(myList,low,high):
+    pi = myList[low + high // 2]
 
-        while(myList[j]>pi):
-            j -= 1
+    while(low <= high):
+        while(myList[low]<pi):
+            low += 1
+
+        while(myList[high]>pi):
+            high -= 1
 
         
-        if(i < j):
-            myList[i],myList[j] = myList[j],myList[i]
+        if(low <= high):
+            myList[low],myList[high] = myList[high],myList[low]
+            low += 1
 
-        print(myList)
+    return low
 
-    if(myList[j]< pi):
-        myList[j],myList[0] = myList[0],myList[j]
+def quicksort(myList,low,high):
+    pi = partition(myList,low,high)
+    if low < pi - 1:
+        quicksort(myList,low,pi-1)
+    if pi < high:
+        quicksort(myList,pi,high)
 
-    # quicksort(myList,0,)
-    # quicksort(myList,low+1,high)
+   
+
 
 q = quicksort(myList,low,high)
 
