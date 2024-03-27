@@ -1,64 +1,70 @@
-class Node():
+class Node(object):
     def __init__(self,val,left = None,right = None):
         self.val = val
         self.left = left
         self.right = right
 
-    def preOrder(self):
-        print(self.val,end=" ")
-        if self.left:
-            self.left.preOrder()
-        if self.right is not None:
-            self.right.preOrder()
 
-    def postOrder(self):
-        if self.left is not None:
-            self.left.postOrder()
-        if self.right is not None:
-            self.right.postOrder()
-        print(self.val,end = " ")
+class BST(object):
+    def __init__(self):
+        self.root = None
 
-    def InOrder(self):
-        if self.left is not None:
-            self.left.InOrder()
-        print(self.val,end = " ")
-        if self.right is not None:
-            self.right.InOrder()
+    def insert(self,temp,data):
+        if self.root is None:
+            self.root = Node(data)
+            return 
+        if data < temp.val:
+            if temp.left is not None:
+                self.insert(temp.left,data)
+            else:
+                temp.left = Node(data)
 
-
+        if data > temp.val:
+            if temp.right is not None:
+                self.insert(temp.right,data)
+            else:
+                temp.right = Node(data)
 
 
-root  = Node(50)
+    def preOrder(self,temp):
+        print(temp.val,end=" ")
+        if temp.left is not None:
+            self.preOrder(temp.left)
+        if temp.right is not None:
+            self.preOrder(temp.right)
 
-root.left = Node(51)
-root.left.right = Node(30)
-root.left.right.left = Node(34)
-root.left.right.left.right = Node(42)
-root.left.right.right = Node(31)
-root.left.right.right.right = Node(71)
-root.left.right.right.right.left = Node(33)
-root.left.right.right.right.right = Node(1)
-root.left.left = Node(44)
-root.left.left.right = Node(41)
-root.left.left.left = Node(40)
-root.left.left.left.left = Node(36)
+    def postOrder(self,temp):
+        if temp.left is not None:
+            self.postOrder(temp.left)
+        if temp.right is not None:
+            self.postOrder(temp.right)
+        print(temp.val,end=" ")
 
-root.right = Node(2)
-root.right.right = Node(3)
-root.right.right.left = Node(8)
-root.right.right.right = Node(5)
-root.right.right.right.left = Node(7)
-root.right.right.right.left.right = Node(12)
-# root.left.left = Node(4)
-# root.left.right = Node(5)
+    def InOrder(self,temp):
+        if temp.left is not None:
+            self.InOrder(temp.left)
+        print(temp.val,end=" ")
+        if temp.right is not None:
+            self.InOrder(temp.right)
+        
 
-# root.right.right = Node(7)
-# root.right.left = Node(6)
+bt = BST()
+bt.insert()
+bt.root = Node(10)
+root = bt.root
+bt.insert(root,5)
+bt.insert(root,15)
+bt.insert(root,3)
+bt.insert(root,7)
+bt.insert(root,12)
+bt.insert(root,17)
+bt.insert(root,1)
+bt.insert(root,9)
+bt.insert(root,14)
 
-root.preOrder()
-print()
-root.postOrder()
-print()
-root.InOrder()
 
-    
+# bt.preOrder(root)
+# print()
+# bt.postOrder(bt.root)
+# print()
+bt.InOrder(root)
