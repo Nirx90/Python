@@ -1,0 +1,46 @@
+make urls.py file in web1,web2
+
+make one folder in project1 line name = templates
+go to template and make folder web1 / page1.html
+go to template and make folder web2 / page1.html
+
+go to web1/views.py -->    same as for web2
+---------------------------------------------------------
+from django.shortcuts import render
+
+def func1(request):
+    return render(request,'web1/page1.html')
+
+---------------------------------------------------------
+
+go to web1/urls.py 
+
+from django.urls import path
+from web1 import views as v1
+urlpatterns = [
+    path('page1/',v1.func1),
+]
+
+---------------------------------------------------------
+go to global urls.py-->
+
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('web1/',include('web1.urls')),
+    path('web2/',include('web2.urls'))
+]
+
+---------------------------------------------------------
+
+go to settings.py --->
+
+import os
+
+TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+
+and then go to TEMPLATES:
+  in that 'DIRS':[] 
+  
+add TEMPLATE_DIR into that empty array

@@ -1,0 +1,100 @@
+goto command prompt
+
+To install virtual environment:
+d:\Python310-32\Scripts>pip install virtualenv
+
+d:\Python310-32\Scripts>e:
+
+Create folder:
+e:\>mkdir Source
+
+Change directory:
+e:\>cd Source
+
+creating virtual environment:
+e:\Source>virtualenv myenv
+
+To enter into virtual environment:
+e:\Source>myenv\scripts\activate
+
+install django:
+(myenv) e:\Source>pip install django==3.2.5
+                       or
+(myenv) e:\Source>pip install  django==3.1
+                     or
+(myenv) e:\Source>pip install django
+( it will install latest version of django)
+
+to see installed softwares and packages:
+(myenv) e:\Source>pip freeze
+
+To create project:
+(myenv) e:\Source>django-admin startproject project1
+
+To enter into new project:
+(myenv) e:\Source>cd project1
+
+To install application or website  in project:
+(myenv) e:\Source\project1>python manage.py startapp website1
+
+To run web server:
+(myenv) e:\Source\project1>python manage.py runserver
+
+browser - 127.0.0.1:8000
+
+To uninstall django:
+(myenv) e:\Source>pip uninstall django
+
+To exit from virtual environment:
+(myenv) e:\Source>myenv\scripts\deactivate
+
+
+
+
+views.py
+-----------
+
+from django.http import HttpResponse
+
+def fun1(request):
+	return HttpResponse('<h1>Welcome</h1>')
+
+settings.py
+---------------
+
+INSTALLED_APPS = [
+     'website1'
+
+
+urls.py
+---------
+
+from website1 import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('fun1/', views.fun1),
+]
+
+
+browser - 127.0.0.1:8000/admin
+                       or
+                 127.0.0.1:8000/fun1
+
+
+To uninstall django:
+
+(myenv) D:\Source>pip uninstall Django==2.2.5
+
+
+To exit from virtual environment:
+(myenv) D:\Source>myenv\scripts\deactivate
+D:\Source>
+
+
+
+
+
+
+
+
