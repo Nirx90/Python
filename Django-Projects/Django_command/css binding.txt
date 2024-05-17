@@ -1,0 +1,34 @@
+connect css file to html page
+
+make one folder at baseline named static
+in that make one more folder named css 
+in that make one style.css file
+
+go to setting.py  -->
+import os
+
+STATIC_DIR = os.path.join(BASE_DIR,'static')
+
+'static'  and folder name 'static' should be same
+
+and than
+STATICFILES_DIRS=[
+    STATIC_DIR
+]
+this variable is same as it is
+
+--------------------------------------------------------
+then go to any website and go to any html file
+in that html file
+
+include this line
+
+{% load static %}
+
+and then in head tag 
+<link rel="stylesheet" href="{% static "css/style.css" %}" />
+
+same for image make image folder in static folder than give path like this in img tag
+
+
+
