@@ -1,0 +1,140 @@
+project name - project13
+templates
+         website1
+               home.html
+
+settings.py
+--------------
+TEMPLATE_DIR=os.path.join(BASE_DIR,"templates")
+
+INSTALLED_APPS = [
+    - - - 
+    'website1',
+]
+
+TEMPLATES = [
+    {
+       . . .  
+        'DIRS': [TEMPLATE_DIR],
+
+models.py
+-------------
+from django.db import models
+
+class Employee(models.Model):
+	eno=models.IntegerField()
+	ename=models.CharField(max_length=20)
+	esal=models.IntegerField()
+	eaddr=models.CharField(max_length=50)
+
+file-> save all
+
+(myenv) e:\Source\project18>py manage.py makemigrations
+
+(myenv) e:\Source\project18>py manage.py migrate
+
+To install faker module:
+(myenv) e:\Source\project18>pip install faker
+
+
+right click on - project18 ->new file -> name : faker.py
+
+import os
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE','project18.settings')
+django.setup()
+
+from website1.models import *
+from faker import Faker
+from random import *
+
+faker=Faker()
+def populate(n):
+	for i in range(n):
+		feno=randint(1001,9999)
+		fename=faker.name()
+		fesal=randint(10000,20000)
+		feaddr=faker.city()
+		emp_record=Employee.objects.get_or_create(eno=feno,ename=fename,esal=fesal,eaddr=feaddr)
+populate(30)
+
+file ->save
+(myenv) e:\Source\project18>python faker.py
+
+admin.py
+-------------
+from website1.models import Employee
+
+class EmployeeAdmin(admin.ModelAdmin):
+	list_display=['id','eno','ename','esal','eaddr']
+
+admin.site.register(Employee,EmployeeAdmin)
+
+views.py
+------------
+from website1.models import Employee
+
+def GetRecords(request):
+	employees=Employee.objects.all()
+	return render(request,'website1/home.html',{'employees':employees})
+
+urls.py
+---------
+from website1 import views
+
+urlpatterns = [
+    . . .
+    path('GetRecords/',views.GetRecords),
+]
+
+home.html
+---------------
+<html>
+<head>
+</head>
+<body>
+<h1> Employees Information </h1>
+{% if employees %}
+<table border="1">
+   <thead>
+     <th> Eno </th>
+     <th> Ename </th>
+     <th> Sal </th>
+     <th> Address </th>
+     </thead>
+     {% for emp in employees %}
+     <tr>
+ 	<td>{{ emp.eno }} </td>
+ 	<td>{{ emp.ename }} </td>
+ 	<td>{{ emp.esal }} </td>
+ 	<td>{{ emp.eaddr}} </td>
+ 	</tr>
+      {%endfor%}
+     </table>
+   {%else%}
+ <p> Records not found </p>
+ {%endif%}
+</body>
+</html>
+
+file -> save all
+-----------------------------------------------------------
+
+(myenv) e:\Source\project18>python manage.py createsuperuser
+Username : admin
+Email address: admin123
+Email address: username@gmail.com
+Password: admin123
+Password (again): admin123
+type : y
+Superuser created successfully.
+
+run server
+127.0.0.1:8000/GetRecords
+127.0.0.1:8000/admin
+
+
+
+
+
