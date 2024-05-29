@@ -1,0 +1,95 @@
+project name - project14
+
+templates
+     website1
+            home.html
+static
+     css 
+        style.css
+
+settings.py
+---------------
+TEMPLATE_DIR=os.path.join(BASE_DIR,"templates")
+
+STATIC_DIR=os.path.join(BASE_DIR,"static")
+
+INSTALLED_APPS = [
+   'website1',
+]
+
+TEMPLATES = [
+    {
+        - - - 
+        'DIRS': [TEMPLATE_DIR],
+
+STATICFILES_DIRS=[
+STATIC_DIR,
+]
+
+right click on - website1 -> new file  -> name : forms.py
+
+from django import forms
+	
+class StudentForm(forms.Form):
+	name=forms.CharField()
+	marks=forms.IntegerField()   
+
+
+views.py
+-----------
+
+from . import forms
+
+def StudentInputForm(request):
+ 	form=forms.StudentForm()
+ 	if request.method=='POST':
+ 		form=forms.StudentForm(request.POST)
+ 		if form.is_valid():
+ 			print('Form validation success and printing data')
+ 			print('Name:',form.cleaned_data['name'])
+ 			print('Marks:',form.cleaned_data['marks'])               
+ 	return render(request,'website1/home.html',{'form':form})   
+
+urls.py
+--------
+from website1 import views as v1
+
+urlpatterns = [
+    path('StudentInputForm/',v1.StudentInputForm),
+]
+
+style.css
+------------
+body
+{
+	background-repeat:no-repeat;
+	background-size:cover;	
+	text-align:center;
+}
+
+home.html
+--------------
+
+<!DOCTYPE html>
+{%load static%}
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="{%static "css/style.css"%}">
+	
+</head>
+<body>
+<h3>Registration Form</h3>
+<div class="container" align="center">
+<form   method="post">
+{{form.as_p}}                                  --- this form.as_p tag is by defalut django tag this will automatically create html label and input tag
+{% csrf_token %}
+<input type="submit" class="btn btn-primary" name="" value="Submit">
+</form>
+</div>
+</body>
+</html>   
+ 
+file -> save all
+runserver
+127.0.0.1:8000/StudentInputForm
+
