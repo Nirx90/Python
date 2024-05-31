@@ -1,0 +1,116 @@
+Form Validations: 
+ 
+We can implement validation logic by using the following 2 ways. 
+1) Explicitly by the programmer by using clean methods 
+2) By using Django built-in validators 
+ 
+Note: All validations should be implemented in the forms.py file 
+ 
+1) Explicitly by the Programmer by using Clean Methods: 
+
+The syntax of clean method: clean_fieldname(self) 
+
+In the FormClass for any field if we define clean method then at the time of submit the form,  Django will call this method automatically to perform validations. If the clean method won't raise any error then only form will be submitted. 
+
+forms.py
+
+
+
+from django import forms
+
+
+class FeedBackForm(forms.Form):
+	name=forms.CharField()
+	rollno=forms.IntegerField()
+	email=forms.EmailField()
+	feedback=forms.CharField(widget=forms.Textarea)   
+
+	def clean_name(self):
+		inputname=self.cleaned_data['name']
+		if inputname.isdecimal():
+			raise forms.ValidationError('Only characters are allowed')
+		elif len(inputname) < 4:
+			raise forms.ValidationError('The Minimum no of characters in the name field should be 4')
+		return inputname   
+
+	def clean_rollno(self):
+ 		inputrollno=self.cleaned_data['rollno']
+ 		print('Validating rollno field')
+ 		return inputrollno 
+
+	def clean_email(self):
+		inputemail=self.cleaned_data['email']
+		print('Validating email field')
+		return inputemail
+
+	def clean_feedback(self):
+		inputfeedback=self.cleaned_data['feedback']
+		print('Validating feedback field')
+		return inputfeedback   
+
+
+Note: We can use any number of validators for the same field 
+ 
+Validation of Total Form directly by using a Single Clean Method: 
+Whenever we are submitting the form Django will call clean() method present in our Form class. 
+In that method we can implement all validations.  
+
+
+from django import forms
+
+class FeedBackForm(forms.Form):
+	name=forms.CharField()
+	rollno=forms.IntegerField()
+	email=forms.EmailField()
+	feedback=forms.CharField(widget=forms.Textarea)   
+
+
+	def clean(self):
+		s=super().clean()
+		inputname=s['name']
+		if inputname[0].lower() != 'd':
+			raise forms.ValidationError('Name parameter should starts with d')
+		inputrollno=s['rollno']
+		if inputrollno <=0:
+			raise forms.ValidationError('Rollno should be > 0') 
+
+
+Built-in Validators:
+
+feedback = forms.CharField(widget = forms.Textarea,validators = [validators.MaxLengthValidator(40),validators.MinLengthValidator(10)]) 
+ 
+Note: Usage of built in validators is very easy when compared with clean methods. 
+
+from django import forms
+from django.core import validators   
+
+
+class FeedBackForm(forms.Form):
+	name=forms.CharField()
+	rollno=forms.IntegerField()
+	email=forms.EmailField()
+	feedback=forms.CharField(widget=forms.Textarea,validators= [validators.MinLengthValidator(10),validators.MaxLengthValidator(40)])
+	
+
+How to implement Custom Validators by using the same Validator Parameter: 
+ 
+The value of name parameter should starts with 'd' or 'D'. We can implement this validation as follows.
+
+forms.py
+-----------
+from django import forms
+from django.core import validators   
+
+
+def checkname(value):
+ 	if value[0].lower() != 'd':
+ 		raise forms.ValidationError('Name should be starts with d | D')   
+
+class FeedBackForm(forms.Form):
+	name=forms.CharField(validators=[checkname])
+	rollno=forms.IntegerField()
+	email=forms.EmailField()
+	feedback=forms.CharField(widget=forms.Textarea,validators= [validators.MaxLengthValidator(40)])   
+
+
+ 
