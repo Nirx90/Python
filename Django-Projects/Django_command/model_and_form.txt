@@ -1,0 +1,174 @@
+project name - PROJECT15
+
+templates
+      website1
+            index.html 
+            addmovie.html 
+            listmovie.html
+static
+      css
+         style.css
+
+TEMPLATE_DIR=os.path.join(BASE_DIR,"templates")
+
+STATIC_DIR=os.path.join(BASE_DIR,"static")
+
+
+models.py
+-------------
+from django.db import models
+
+class Movie(models.Model):
+	rdate=models.DateField()
+	moviename=models.CharField(max_length=30)
+	hero=models.CharField(max_length=30)
+	heroine=models.CharField(max_length=30)
+	rating=models.IntegerField()   
+
+right click on - website1 -> new file -> name : forms.py
+
+from django import forms
+from website1.models import Movie
+
+class MovieForm(forms.ModelForm):
+	class Meta:
+		model=Movie
+		fields='__all__'
+views.py
+------------
+
+from website1.forms import MovieForm
+from website1.models import Movie
+
+def index_view(request):
+	return render(request,'website1/index.html')
+
+def add_movie_view(request):
+	form=MovieForm()
+	if request.method=='POST':
+		form=MovieForm(request.POST)
+		if form.is_valid():
+			form.save(commit=True)
+	return render(request,'website1/addmovie.html',{'form':form})
+
+def list_movie_view(request):
+	movies_list=Movie.objects.all().order_by('-rating')
+	return render(request,'website1/listmovie.html',{'movies_list':movies_list})   
+
+urls.py
+---------
+from website1 import views
+
+urlpatterns = [
+    path('', views.index_view),
+    path('addmovie/', views.add_movie_view),
+    path('listmovies/', views.list_movie_view),   
+]
+
+style.css
+------------
+.container
+{
+margin-top:100px;
+}
+.jumbotron
+{
+background:red;
+}
+
+
+
+ 
+index.html
+--------------
+<!DOCTYPE html>
+{%load static %}
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"><link rel="stylesheet" href="{% static "css/style.css"%}">
+</head>
+<body>
+<div class="container" align="center">
+<div class="jumbotron">
+<h1>Movies List</h1>
+<a class="btn btn-primary btn-lg"  href="/addmovie">Add Movie</a>
+<a class="btn btn-primary btn-lg"  href="/listmovies">List Movies</a>
+</div>
+</div>
+</body>
+</html>   
+
+addmovie.html
+--------------------
+
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static "css/style.css"%}">
+</head>
+<body>
+<div class="container" align='center'>
+<h1>Add Movie Information</h1><hr>
+<form  method="post">
+{{form.as_p}}
+{% csrf_token %}
+<input type="submit" class='btn btn-primary' value="Add Movie">
+<a class='btn btn-primary' href="/" >Home </a>
+</form>
+</div>
+</body>
+</html>   
+
+
+listmovie.html
+-------------------
+
+<!DOCTYPE html>
+{% load static%}
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static "css/style.css"%}">
+</head>
+<body>
+<h1 align="center">Movies Information</h1>
+{% if movies_list %}
+<table border="1" align="center" bgcolor="cyan" bordercolor="blue">
+	<thead>
+	<th>Released Date</th>
+	<th>Movie Name</th>
+	<th>Hero</th>
+	<th>Heroine</th>
+	<th>Rating</th>
+	</thead>   
+        {% for movie in movies_list %}
+         <tr>
+         	<td>{{movie.rdate}}</td>
+         	<td>{{movie.moviename}}</td>
+         	<td>{{movie.hero}}</td>
+         	<td>{{movie.heroine}}</td>
+         	<td>{{movie.rating}}</td>
+         </tr> 
+        {% endfor %}
+    	 <tr>
+	 	<td colspan="5">
+    	 	   <a class='btn btn-primary' href="/" >Home </a>
+    	 	</td>
+    	 </tr>
+         </table>
+ 	{% else %}
+ 	<p>Records not found</p>
+	{% endif %}
+	</body> 
+</html>   
+
+
+file -> save all
+...modelformproject2>py manage.py makemigrations
+
+....modelformproject2>py manage.py  migrate
+
+
+
+
