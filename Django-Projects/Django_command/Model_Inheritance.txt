@@ -1,0 +1,181 @@
+Working with Advanced Model Features 
+There are 4 types of Model Inheritance. 
+
+1) Abstract Base Class Inheritance 
+2) Multi table Inheritance 
+3) Multiple Inheritance
+4) Proxy Model Inheritance 
+
+1) Abstract Base Class Model Inheritance 
+
+Without Inheritance 
+class Student(models.Model):
+	name=models.CharField(max_length=64)
+	email=models.EmailField()
+	address=models.CharField(max_length=256)
+	rollno=models.IntegerField()
+	marks=models.IntegerField()
+
+class Teacher(models.Model):
+	name=models.CharField(max_length=64)
+	email=models.EmailField()
+	address=models.CharField(max_length=256)
+	subject=models.CharField(max_length=64)
+	salary=models.FloatField() 
+
+
+with inheritence:
+
+from django.db import models
+
+class ContactInfo(models.Model):
+	name=models.CharField(max_length=20)
+	email=models.EmailField()
+	address=models.CharField(max_length=50)
+	class Meta:
+		abstract=True
+
+class Student(ContactInfo):
+	rollno=models.IntegerField()
+	marks=models.IntegerField()
+
+class Teacher(ContactInfo):
+	subject=models.CharField(max_length=20)
+	salary=models.FloatField()   
+
+##------------------------------
+
+from django.db import models
+
+# Create your models here.
+class BasicModel(models.Model):
+	f1=models.CharField(max_length=64)
+	f2=models.CharField(max_length=64)
+	f3=models.CharField(max_length=64)
+
+class StandardModel(BasicModel):
+	f4=models.CharField(max_length=64)
+	f5=models.CharField(max_length=64)   
+
+
+##-----------------
+
+2)Multi Level Inheritance: Inheritance at multiple levels. 
+
+class Person(models.Model):
+	name=models.CharField(max_length=64)
+	age=models.IntegerField()
+
+class Employee(Person):
+	eno=models.IntegerField()
+	esal=models.FloatField()
+
+class Manager(Employee):
+	exp=models.IntegerField()
+	team_size=models.IntegerField()   
+
+##-----------------
+
+3) Multiple Inheritance:
+       If model class extends multiple parent classes simultaneously then such type of inheritance is called Multiple Inheritance. 
+
+
+from django.db import models
+
+class Parent1(models.Model):
+	f1=models.CharField(max_length=64)
+	f2=models.CharField(max_length=64)
+class Parent2(models.Model):
+	f3=models.CharField(max_length=64)
+	f4=models.CharField(max_length=64)
+class Child(Parent1,Parent2):
+	f5=models.CharField(max_length=64)
+	f6=models.CharField(max_length=64)
+
+Note:
+1. Multiple inheritance is also internally multi table inheritance only.
+2. In multiple inheritance Parent classes should not contain any common field, otherwise we will get error. 
+ 
+example 2: using mutliple inheritence
+----------------------------------------------------
+from django.db import models
+
+# Create your models here.
+class Parent1(models.Model):
+	f1=models.AutoField(primary_key=True)
+	f2=models.CharField(max_length=64)
+
+class Parent2(models.Model):
+	f3=models.AutoField(primary_key=True)
+	f4=models.CharField(max_length=64)
+
+class Child(Parent1,Parent2):
+	f5=models.CharField(max_length=64)
+	f6=models.CharField(max_length=64)
+
+
+##-----------------
+
+
+4) Proxy Model Inheritance: 
+
+For the same Model we can provide a customized view without touching the database is possible by using Proxy Model Inheritance. 
+
+In this inheritance a seperate new table won't be created and the new model also pointing to the same old table. 
+
+class Employee(models.Model):
+	fields
+
+class ProxyEmployee(Employee):
+	class Meta:
+		proxy=True 
+
+ex:
+
+Models.py
+
+from django.db import models
+
+class Employee(models.Model):
+	name=models.CharField(max_length=250)
+	email=models.EmailField()
+	salary=models.FloatField()
+
+class ProxyEmployee(Employee):
+	class Meta:
+		proxy=True
+admin.py:
+
+from django.contrib import admin
+from .models import ProxyEmployee
+
+admin.site.register(ProxyEmployee)
+
+  
+Both Employee and ProxyEmployee are pointing to the same table only.
+In the admin interface if we add a new record to either Employee or ProxyEmployee, then automatically those changes will be reflected to other model view. 
+
+Model Manager
+--------------------
+
+Model Manager can be used to interact with the database. 
+By default Model Manager is available through the Model.objects property.i.e Model.objects is of type django.db.models.Manager. 
+ 
+1) What is the purpose of Model Manager?
+     To interact with database 
+ 
+2. How to get Default Model Manager?
+     By using Model.objects property 
+ 
+3. Model Manager is what type?
+     django.db.models.Manager    
+ 
+>>> from website1.models import Employee 
+>>> type(Employee.objects)
+<class 'django.db.models.Manager'> 
+
+
+We can customize the defualt behaviour of Model Manager by defining our own Customer Manager. 
+ 
+How to define our own Custom Manager: 
+We have to write child class for models.Manager. Whenever we are using all() method,internally it will call get_queryset() method. To customize behaviour we have to override this method in our Custom 
