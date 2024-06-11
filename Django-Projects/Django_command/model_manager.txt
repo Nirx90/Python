@@ -1,0 +1,50 @@
+from django.db import models
+
+class CustomManager(models.Manager):
+	def get_queryset(self):
+		return super().get_queryset().order_by('sal')
+
+class Employee(models.Model):
+	eno=models.IntegerField()
+	ename=models.CharField(max_length=64)
+	sal=models.FloatField() 
+	addr=models.CharField(max_length=256)
+	objects=CustomManager()  
+
+
+---------------
+
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Employee Information</h1><hr>
+ <table border='2'>
+ 	<thead>
+ 		<th>Employee Number</th>
+ 		<th>Employee Name</th>
+ 		<th>Employee Salary</th>
+
+ 		<th>Employee Address</th>
+ 	</thead>
+ 	{%for  emp in employees %}
+ 	<tr>
+ 		<td>{{emp.eno}}</td>
+ 		<td>{{emp.ename}}</td>
+ 		<td>{{emp.sal}}</td>
+ 		<td>{{emp.addr}}</td>
+ 	</tr>
+ 	{%endfor%}
+ </table><br><br><br>
+</body>
+</html>
+
+--------------------
+
+
+from django.shortcuts import render
+from website1.models import Employee
+
+def display_view(request):
+	employees=Employee.objects.all()	
+	my_dict={'employees':employees}
+	return render(request,'website1/home.html',my_dict) 
