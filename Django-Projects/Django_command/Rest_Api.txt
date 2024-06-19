@@ -1,0 +1,104 @@
+(myenv) D:\Source>django-admin startproject project40
+
+(myenv) D:\Source>cd project40
+
+(myenv) D:\Source\project40>py manage.py startapp website1
+
+(myenv) D:\Source\project40>pip install djangorestframework
+
+settings.py
+--------------
+INSTALLED_APPS = [
+    'website1',
+    'rest_framework',
+]
+
+
+models.py
+--------------
+
+from django.db import models
+
+class Employee(models.Model):
+	firstname=models.CharField(max_length=20)
+	lastname=models.CharField(max_length=20)
+	emp_id=models.IntegerField()
+
+	def __str__(self):
+		return self.firstname
+
+right click on - website1 -> new file -> name : serializers.py -> ok
+-------------------------------------------------------------------------------------------
+
+from rest_framework import serializers
+from website1.models import Employee
+
+class EmployeeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=Employee
+		fields='__all__'
+
+views.py
+-----------
+
+from django.shortcuts import render
+from rest_framework.generics import ListAPIView,CreateAPIView,DestroyAPIView,UpdateAPIView
+from rest_framework.response import Response
+from website1.models import Employee
+from website1.serializers import EmployeeSerializer
+
+class ListEmployeeAPIView(ListAPIView):
+	queryset = Employee.objects.all()
+	serializer_class = EmployeeSerializer
+
+
+class CreateEmployeeAPIView(CreateAPIView):
+	queryset = Employee.objects.all()
+	serializer_class = EmployeeSerializer
+	
+class UpdateEmployeeAPIView(UpdateAPIView):
+	queryset = Employee.objects.all()
+	serializer_class = EmployeeSerializer
+	
+class DeleteEmployeeAPIView(DestroyAPIView):
+	queryset = Employee.objects.all()
+	serializer_class = EmployeeSerializer
+	
+
+right click on - website1 -> new file -> urls.py
+--------------------------------------------------------------
+from django.urls import path
+from website1 import views
+
+urlpatterns = [
+    path("",views.ListEmployeeAPIView.as_view(),name="employee_list"),
+    path("create/", views.CreateEmployeeAPIView.as_view(),name="employee_create"),
+    path("update/<int:pk>/",views.UpdateEmployeeAPIView
+	.as_view(),name="update_employee"),
+    path("delete/<int:pk>/",views.DeleteEmployeeAPIView.as_view(),name="delete_employee"),
+]
+
+urls.py
+---------
+
+from django.contrib import admin
+from django.urls import path,include
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('website1/',include("website1.urls"))
+]
+
+file -> save all
+(myenv) E:\Source\project40> py manage.py makemigrations
+(myenv) E:\Source\project40> py manage.py migrate
+(myenv) E:\Source\project40> py manage.py runserver
+
+127.0.0.1:8000/website1/
+127.0.0.1:8000/website1/create
+127.0.0.1:8000/website1/update/2
+127.0.0.1:8000/website1/delete/1
+
+
+
