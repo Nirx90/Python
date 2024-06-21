@@ -1,0 +1,173 @@
+Authentication and Authorization 
+ 
+Authentication: The process of validating user is called authentication. 
+
+Authorization: The process of validating access permissions of user is called authorization. 
+ 
+Generally our web pages can be accessed by any person without having any restrictions. But some times our business requirement is to access a web page compulsory we have to register and login.Then only end user can able to access our page. To fulfill such of requirements we should go for Django authentication and authorization module.               (auth application) 
+ 
+Django provides the following 2 in built applications for user authentication. 
+ 
+1) django.contrib.auth 
+2) django.contrib.contenttypes 
+ 
+auth application is authentication application of Django. This auth application internally uses contenttypes application to track models installed in our database. 
+ 
+Note: To use Django in built authentication facility, compulsory these 2 applications should be in INSTALLED_APPS list. But from Django 1.10 onwards automatically these are available and we are not required to add explicitly. 
+ 
+Django uses PBKDF2_Sha256 algorithm to encrypt passwords and hence passwords won't be stored in plain text form and we can expect more security. Even superuser also cannot see any user's password. 
+ 
+Based on our requirement, we can use more secure hashing algorithms also like bcrypt and argon2. We can install with pip as follows. 
+ 
+pip install bcrypt
+pip install django[argon2] 
+ 
+More secured algorithm is argon2 and then bcrypt followed PBKDF2. 
+
+In settings.py we have to configure password hashers as follows. 
+PASSWORD_HASHERS=[
+'django.contrib.auth.hashers.Argon2PasswordHasher',
+'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+'django.contrib.auth.hashers.BCryptPasswordHasher',
+'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+]   
+
+Django will always consider from first to last. ie order is important. 
+ 
+Just like templates and static folder, we have to create media folder also
+
+Difference between Static and Media Folders:
+
+Static folder contains images, CSS files etc which are provided by application to the end user.
+But media folder contains the resources like images provided by end user to the application (like profile image etc) 
+ 
+How to Configure Media Folder in settings.py File:
+ 
+MEDIA_DIR = os.path.join(BASE_DIR,'media')
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL = '/media/' 
+ 
+ 
+We have to configure auth application url patterns in urls.py file. 
+ 
+from django.conf.urls import path,include 
+ 
+path('accounts/', include('django.contrib.auth.urls')),
+
+
+settings.py
+---------------
+
+LOGIN_REDIRECT_URL='/' 
+LOGOUT_REDIRECT_URL='/logout' 
+
+
+After logout then Django default logout page will be displayed. Instead of this default target page we can configure our own target page inside settings.py as follows. 
+
+LOGOUT_REDIRECT_URL='/' 
+ 
+If we click login link explicitly and after login by default the control will goes to  http://127.0.0.1:8000/accounts/profile/ But we can configure our own target page after login inside settings.py as follows. 
+ 
+LOGIN_REDIRECT_URL='/' 
+
+
+project name : securityproject1
+
+
+templates
+        registration
+                login.html
+        website1
+                home.html
+                logout.html
+
+settings.py
+---------------
+TEMPLATE_DIR=os.path.join(BASE_DIR,"templates")
+
+INSTALLED_APPS = [
+    - - -
+    'website1',
+]
+
+TEMPLATES = [
+    {
+       - - - 
+       'DIRS': [TEMPLATE_DIR],
+  
+LOGIN_REDIRECT_URL='/'
+
+LOGOUT_REDIRECT_URL='/logout' 
+
+views.py
+-----------
+
+from django.shortcuts import render
+
+def fun1(request):
+	return render(request,'website1/home.html')
+
+def fun2(request):
+	return render(request,'website1/logout.html')
+
+urls.py
+----------
+from django.urls import path,include
+from website1 import views
+
+urlpatterns = [
+    path('accounts/',include('django.contrib.auth.urls')),
+    path(' ',views.fun1),
+    path('logout/',views.fun2),
+]
+
+
+login.html
+--------------
+
+<html>
+<body>
+<h1>Login </h1>
+<form  method="post">
+{{form.as_p}}
+{%csrf_token%}
+<button type="submit">Login</button>
+</form>
+</body>
+</html>
+
+
+home.html
+--------------
+ <html>
+ <body>
+ {% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="logout/">logout</a></p>
+ {% endif %}
+</body>
+</html>
+
+logout.html
+-----------------
+<html>
+<body>
+<h1>You are logged out</h1>
+</body>
+</html>
+
+file -> save all
+--------> py manage.py migrate
+--------> py manage.py createsuperuser
+
+run server
+
+127.0.0.1:8000/admin 
+create user in admin site.
+
+127.0.0.1:8000/accounts/login 
+
+
+
+ 
