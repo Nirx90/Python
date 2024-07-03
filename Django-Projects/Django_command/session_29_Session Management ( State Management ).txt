@@ -1,0 +1,79 @@
+State Management:
+
+Client and Server can communicate with some common language which is nothing but HTTP. 
+The basic limitation of HTTP is, it is stateless protocol. i.e it is unable to remember client information for future purpose across multiple requests. Every request to the server is treated as new request. 
+ Hence some mechanism must be required at server side to remember client information across multiple requests.This mechanism is nothing but session management mechanism. 
+The following are various State management mechanisms. 
+ 
+1) Cookies 
+2) URL Rewriting 
+3) Hidden Form Fields etc 
+4) Session API 
+
+Session Management By using Cookies: Cookie is a very small amount of information created by Server and maintained by client. 
+ 
+Whenever client sends a request to the server,if server wants to remember client information for the future purpose then server will create cookie object with the required information. Server will send that Cookie object to the client as the part of response. Client will save that cookie in its local machine and send to the server with every consecutive request. By accessing cookies from the request server can remember client information. 
+ How to Test our Browser Supports Cookies OR not: We have to use the 
+following 3 methods on the request object. 
+ 
+1) set_test_cookie() 
+2) test_cookie_worked() 
+3) delete_test_cookie() 
+ 
+ 
+
+Application-1 Session Management by using Cookies                                             
+(PageCount Application) 
+
+project name - smproject2
+
+templates
+     website1
+            home.html
+
+settings.py
+--------------
+TEMPLATE_DIR=os.path.join(BASE_DIR,"templates")
+
+add website1 in installed_apps
+
+'DIRS': [TEMPLATE_DIR],
+
+
+views.py
+-----------
+from django.shortcuts import render
+
+
+def count_view(request):
+	if 'count' in request.COOKIES:
+		newcount=int(request.COOKIES['count'])
+		newcount=newcount+1
+	else:
+		newcount=1
+	response=render(request,'website1/home.html',{'count':newcount})
+	response.set_cookie('count',newcount)
+	return response   
+
+urls.py
+--------
+from website1 import views
+
+urlpatterns = [
+   path('count_view/',views.count_view),
+]
+
+home.html
+------------
+
+<html>
+<body>
+<h1>Page Count is: <span> {{count}}<span></h1>
+</body>
+</html> 
+
+file -> save all
+run server
+127.0.0.1:8000/count_view
+Note: To  get count, refresh or reload the page by pressing F5.
+

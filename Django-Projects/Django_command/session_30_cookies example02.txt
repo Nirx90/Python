@@ -1,0 +1,118 @@
+project name - project30
+
+templates
+      website1
+            name.html
+            age.html
+            address.html
+            results.html
+
+do changes in settings.py
+
+views.py
+-----------
+from django.shortcuts import render
+
+ 
+def name_view(request):
+ 	return render(request,'website1/name.html')
+
+def age_view(request): 
+ 	name=request.GET['name']
+ 	response=render(request,'website1/age.html',{'name':name})
+ 	response.set_cookie('name',name)
+ 	return response
+
+
+def address_view(request):
+	age=request.GET['age']
+	name=request.COOKIES['name']
+	response=render(request,'website1/address.html',{'name':name})
+	response.set_cookie('age',age)
+	return response
+
+
+def results_view(request):
+	name=request.COOKIES['name']
+	age=request.COOKIES['age']
+	address=request.GET['address']
+	response=render(request,'website1/results.html',{'name':name,'age':age,'address':address})
+	response.set_cookie('address',address)
+	return response   
+ 
+ 
+name.html
+--------------
+<!DOCTYPE html>
+<head>
+</head>
+<body>
+	<h1>Welcome to ABC</h1>
+	<form action='/age'>
+	Enter Name: <input type="text" name="name" value="">
+	<br><br>
+	<input type="submit" name="" value="Submit Name">
+	</form>
+<body>
+</html>   
+
+age.html
+-----------
+<html>
+<body>
+	<h1>Hello {{name}}..</h1><hr>
+	<form action='/address'>
+		Enter Age: <input type="text" name="age" value=""><br><br>
+		<input type="submit" name="" value="Submit Age">
+	</form>
+</body>
+</html>   
+
+address.html
+-----------------
+<html>
+<body>
+	<h1>Hello {{name}}..</h1><hr>
+<form action='/results'>   
+	
+ 	Enter Address <input type="text" name="address" value=""><br><br>
+ 	<input type="submit" name="" value="Submit Address">
+ </form>
+ </body>
+ </html>   
+
+results.html
+----------------
+<html>
+<body>
+	<h1>Hello {{name}} Thanks for providing info</h1>
+	<ul>
+		<li>Name:{{name}}</li>
+		<li>Age:{{age}}</li>
+		<li>Address:{{address}}</li>
+		</ul>
+	</body>
+</html>  
+
+urls.py
+---------
+from website1 import views
+
+urlpatterns = [
+    path('name_view/',views.name_view),
+    path('age/',views.age_view),
+    path('address/',views.address_view),
+    path('results/',views.results_view)
+]
+
+file -> save all
+run server
+127.0.0.1:8000/name_view
+
+
+
+
+
+
+
+
