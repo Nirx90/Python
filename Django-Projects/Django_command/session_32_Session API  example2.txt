@@ -1,0 +1,102 @@
+project name - project32
+
+
+templates
+      website1
+          name.html
+          age.html
+          address.html
+          results.html
+
+add statements in settings.py
+
+views.py
+-----------
+from django.shortcuts import render
+
+# Create your views here.
+def name_view(request):
+	return render(request,'website1/name.html')
+
+def age_view(request):
+	name=request.GET['txtname']
+	request.session['name']=name
+	return render(request,'website1/age.html')
+
+def address_view(request):
+	age=request.GET['txtage']
+	request.session['age']=age
+	return render(request,'website1/address.html')
+
+def results_view(request):
+	address=request.GET['txtaddress']
+	request.session['address']=address
+	return render(request,'website1/results.html')   
+ 
+
+name.html
+--------------
+<html>
+<body>
+<form action='/age'>
+Enter Name: <input type="text" name="name" value="">
+<br><br>
+<input type="submit" name="" value="Submit Name">
+</form>
+<body>
+</html>   
+
+age.html
+-----------
+<html>
+<body>
+<form action='/address'>
+Enter Age: <input type="text" name="age" value=""><br><br>
+<input type="submit" name="" value="Submit Age">
+</form>
+</body>
+</html>   
+
+address.html
+-----------------
+<html>
+<body>
+<form action='/results'>   
+Enter Address <input type="text" name="address" value="" ><br><br>
+ <input type="submit" name="" value="Submit Address">
+ </form>
+ </body>
+ </html>   
+
+results.html
+----------------
+<html>
+<body>
+{% if request.session %}
+<ul>
+{%for key,value in request.session.items %}
+<li> <h2>{{key|upper}}: {{value|title}}</h2></li>
+{%endfor%}
+</ul>
+{%else%}
+<p>No Information available</p> 
+{%endif%}
+</body>
+</html>  
+
+urls.py
+---------
+from website1 import views
+
+urlpatterns = [
+    path('name_view/',views.name_view),
+    path('age/',views.age_view),
+    path('address/',views.address_view),
+    path('results/',views.results_view)
+]
+
+...............> py manage.py migrate
+file -> save all
+run server
+127.0.0.1:8000/name_view
+

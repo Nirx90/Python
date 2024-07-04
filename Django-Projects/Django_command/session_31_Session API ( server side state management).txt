@@ -1,0 +1,100 @@
+Session Management By using Session API
+(Django Session Framework):
+
+Once client sends request to the server,if server wants to remember client information for the future purpose then  server will create session object and store required information in that object. For every session object a unique identifier available which is nothing but sessionid.
+
+Server sends the corresponding session id to the client as the part of response. Client retrieves the session id from the response and save in the local file system. With every consecutive request client will that session id. By accessing that session id and corresponding session object server can remember client. This mechanism is nothing but session management by using session api. 
+ 
+Note: Session information will be stored in one of following possibilities 
+1. Inside a File 
+2. Inside a database 
+3. Inside Cache 
+
+The most straight forward approach is to use django.contrib.sessions application to store session information in a Django Model/database. 
+ 
+The Model Name is: django.contrib.sessions.models.Session 
+ 
+Note: To use this approach compulsory the following applicaiton should be configured inside INSTALLED_APPS list of settings.py file.       
+
+django.contrib.sessions  
+ 
+If it is not there then we can add, but we have to synchronize database     python manage.py syncdb 
+ 
+Note: 
+ 
+INSTALLED_APPS = [
+     ....     
+'django.contrib.sessions',
+     ... ] 
+ 
+MIDDLEWARE = [
+     ..
+     'django.contrib.sessions.middleware.SessionMiddleware',
+     .... ]
+
+functions  to work with session object : 
+
+To add data in session:
+ request.session['key'] = value
+ 
+To get data from session:
+<variable> = request.session['key']
+
+To set expiry time for the session:
+request.session.set_expiry(seconds) 
+
+To returns the expiry age in seconds
+request.session.get_expiry_age()        
+
+To returns the date on which this session will expire 
+request.session.get_expiry_date()
+
+ 
+Note: Before using session object in our application, compulsory we have to migrate. Otherwise we will get the following error. no such table: django_session 
+ 
+  
+Application-1 Session Management by using Session API (counting no. of users visited the website)
+
+project name - sessionproject1
+
+templates 
+       website1
+            home.html
+
+add statements in settings.py
+
+views.py
+-----------
+from django.shortcuts import render
+
+def fun1(request):
+	count=request.session.get('count',0)
+	newcount=count+1
+	request.session['count']=newcount
+	#request.session.set_expiry(180) 
+	print(request.session.get_expiry_age())
+	print(request.session.get_expiry_date())
+	return render(request,'website1/home.html',{'count':newcount})   
+
+
+home.html
+--------------
+<html>
+<body>
+<h1>No. of visitors :<span>{{count}}</span></h1>
+</body>
+</html>   
+
+urls.py
+---------
+from website1 import views
+urlpatterns = [
+    path('fun1/',views.fun1),
+]
+
+  > py manage.py migrate
+  run server
+  127.0.0.1:8000/fun1
+
+
+
