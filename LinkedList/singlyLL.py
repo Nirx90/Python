@@ -16,6 +16,16 @@ class singlyLL(object):
         newBox = Box(value,self.head)
         self.head = newBox
 
+    def insert_at_last(self,value):
+        if self.isEpmpty():
+            return self.insert_at_first(value)
+        
+        temp = self.head
+        while temp.next:
+            temp = temp.next
+
+        temp.next = Box(value)
+
     def printLL(self):
         if self.isEpmpty():
             return
@@ -30,6 +40,7 @@ list1 = [4,6,8,12,33,23]
 for i in list1:
     sl.insert_at_first(i)
 
+sl.insert_at_last(25)
 sl.printLL()
 
 
