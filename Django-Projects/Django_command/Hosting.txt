@@ -1,0 +1,12 @@
+go to pythonanywhere.com
+---> files page
+     then here uplod your zip file
+
+then click on open bash console here
+ this will open terminal in linux mode
+   then using command unzip that file
+
+command -- unzip projectname
+ex     -- unzip pro2.py
+
+
